@@ -1,6 +1,6 @@
-import sys
 import math
 import random
+import sys
 import time
 from collections import deque
 
@@ -25,12 +25,12 @@ RED = (255, 0, 0)
 GREY = (150, 150, 150)
 
 # Tile definitions in layout
-WALL = '#'
-PELLET = '.'
-POWER = 'o'
-EMPTY = ' '
-PLAYER_START = 'P'
-GHOST_SPAWN = 'G'
+WALL = "#"
+PELLET = "."
+POWER = "o"
+EMPTY = " "
+PLAYER_START = "P"
+GHOST_SPAWN = "G"
 
 
 class Maze:
@@ -115,16 +115,16 @@ class Maze:
     def draw(self, surf):
         surf.fill(NAVY)
         # Draw walls
-        for (c, r) in self.walls:
+        for c, r in self.walls:
             rect = pygame.Rect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE)
             pygame.draw.rect(surf, BLUE, rect)
         # Draw pellets
-        for (c, r) in self.pellets:
+        for c, r in self.pellets:
             x = c * TILE_SIZE + TILE_SIZE // 2
             y = r * TILE_SIZE + TILE_SIZE // 2
             pygame.draw.circle(surf, WHITE, (x, y), 3)
         # Draw power pellets
-        for (c, r) in self.power_pellets:
+        for c, r in self.power_pellets:
             x = c * TILE_SIZE + TILE_SIZE // 2
             y = r * TILE_SIZE + TILE_SIZE // 2
             pygame.draw.circle(surf, WHITE, (x, y), 6)
@@ -144,7 +144,9 @@ class Entity:
         self.radius = TILE_SIZE // 2 - 2
 
     def grid_pos(self):
-        return int(round(self.x / TILE_SIZE - 0.5)), int(round(self.y / TILE_SIZE - 0.5))
+        return int(round(self.x / TILE_SIZE - 0.5)), int(
+            round(self.y / TILE_SIZE - 0.5)
+        )
 
     def pixel_center_of_tile(self, col, row):
         return col * TILE_SIZE + TILE_SIZE // 2, row * TILE_SIZE + TILE_SIZE // 2
@@ -184,7 +186,9 @@ class Entity:
         self.move_step()
 
     def draw(self, surf):
-        pygame.draw.circle(surf, self.color, (int(self.x), int(self.y)), TILE_SIZE // 2 - 2)
+        pygame.draw.circle(
+            surf, self.color, (int(self.x), int(self.y)), TILE_SIZE // 2 - 2
+        )
 
 
 class Player(Entity):
@@ -234,9 +238,9 @@ class Player(Entity):
 
 
 class Ghost(Entity):
-    STATE_NORMAL = 'normal'
-    STATE_FRIGHTENED = 'frightened'
-    STATE_EATEN = 'eaten'
+    STATE_NORMAL = "normal"
+    STATE_FRIGHTENED = "frightened"
+    STATE_EATEN = "eaten"
 
     def __init__(self, maze: Maze, col, row, color, name="Ghost"):
         super().__init__(maze, col, row, color)
@@ -255,7 +259,10 @@ class Ghost(Entity):
         self.frightened_end_time = time.time() + duration
 
     def update_state(self):
-        if self.state == Ghost.STATE_FRIGHTENED and time.time() > self.frightened_end_time:
+        if (
+            self.state == Ghost.STATE_FRIGHTENED
+            and time.time() > self.frightened_end_time
+        ):
             self.state = Ghost.STATE_NORMAL
 
     def choose_direction(self, game):
@@ -335,8 +342,10 @@ class ChaserGhost(Ghost):
         dr = next_tile[1] - start[1]
         # Only change at center
         if self.at_center_of_tile():
-            self.dir = (int(math.copysign(1, dc)) if dc != 0 else 0,
-                        int(math.copysign(1, dr)) if dr != 0 else 0)
+            self.dir = (
+                int(math.copysign(1, dc)) if dc != 0 else 0,
+                int(math.copysign(1, dr)) if dr != 0 else 0,
+            )
 
     def _random_direction(self, avoid_reverse=True):
         col, row = self.grid_pos()
